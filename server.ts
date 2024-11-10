@@ -39,14 +39,17 @@ socketServer.use(authenticateToken)
 
 // WEBSOCKET
 socketServer.on('connection', (socket: Socket) => {
-  console.log('Client connected:', socket.id)
-  console.log('Authenticated user:', socket.data.user)
+
+  // Send player his player data based on socket.data.user I
+  const userId = socket.data.user
+
+  socket.emit('sendPlayerId', userId)
 
   socket.on('disconnect', () => {
     console.log('Client disconnected:', socket.id)
   })
 
-  socket.on('playerUpdate', (data) => {
+  socket.on('updatePlayer', (data) => {
 
     // Check object type
     // If proper, send to db
@@ -54,6 +57,7 @@ socketServer.on('connection', (socket: Socket) => {
     // If db doesn't accept, get previous data back and force client to revert update
 
     console.log('Updating player:', data)
+    socket.emit('updatePlayer', data)
   })
 })
 
@@ -63,9 +67,10 @@ app.post('/login', (req: any, res: any) => {
 
   // Check user in database and retrieve his id
   // Return player id inside token
+  const userId = 1
 
   if (username === 'username' && password === 'password') {
-    const id = 1
+    const id = userId
     const token = jwt.sign({ id }, JWT_SECRET, { expiresIn: '1h' })
     return res.json({ token })
   }
