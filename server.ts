@@ -45,6 +45,16 @@ socketServer.on('connection', (socket: Socket) => {
   socket.on('disconnect', () => {
     console.log('Client disconnected:', socket.id)
   })
+
+  socket.on('playerUpdate', (data) => {
+
+    // Check object type
+    // If proper, send to db
+    // If db accepts, send back data and send that information back to client
+    // If db doesn't accept, get previous data back and force client to revert update
+
+    console.log('Updating player:', data)
+  })
 })
 
 // REST
