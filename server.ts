@@ -3,6 +3,8 @@ import dotenv from 'dotenv'
 import express, { Application } from 'express'
 import http from 'http'
 import jwt from 'jsonwebtoken'
+import mongoose from 'mongoose'
+import path from 'path'
 import { Server, Socket } from 'socket.io'
 import { authenticateToken } from './middlewares/authenticateToken'
 
@@ -12,10 +14,11 @@ dotenv.config()
 // App setup
 const app: Application = express()
 
-const REST_PORT = process.env.REST_PORT || 3333
-const WS_PORT = process.env.WS_PORT || 3334
-const JWT_SECRET = process.env.JWT_SECRET || 'quest&loot'
-const CORS_ORIGIN = process.env.CORS || 'http://localhost:3000'
+const REST_PORT = process.env.REST_PORT
+const WS_PORT = process.env.WS_PORT
+const JWT_SECRET = process.env.JWT_SECRET
+const CORS_ORIGIN = process.env.CORS
+const MONGO_URI = process.env.MONGO_URI
 
 // HTTP server & websocket server
 const server = http.createServer(app)
@@ -24,6 +27,8 @@ const socketServer = new Server(server, {
 })
 
 // MIDDLEWARES
+// Static page
+app.use('/', express.static(path.join(__dirname, 'public')))
 // REST: json parse
 app.use(express.json())
 
@@ -71,7 +76,7 @@ app.post('/login', (req: any, res: any) => {
 
   if (username === 'username' && password === 'password') {
     const id = userId
-    const token = jwt.sign({ id }, JWT_SECRET, { expiresIn: '1h' })
+    const token = jwt.sign({ id }, JWT_SECRET!, { expiresIn: '1h' })
     return res.json({ token })
   }
 
@@ -79,10 +84,14 @@ app.post('/login', (req: any, res: any) => {
 })
 
 // Listeners
-app.listen(REST_PORT, () => {
-  console.log(`REST server is fire at http://localhost:${REST_PORT}`)
-})
+mongoose.connect(MONGO_URI!).then(() => {
+  console.log('Connected to mongodb!')
 
-server.listen(WS_PORT, () => {
-  console.log(`WEBSOCKET server is fire at http://localhost:${WS_PORT}`)
+  app.listen(REST_PORT, () => {
+    console.log(`REST server is fire at http://localhost:${REST_PORT}`)
+  })
+
+  server.listen(WS_PORT, () => {
+    console.log(`WEBSOCKET server is fire at http://localhost:${WS_PORT}`)
+  })
 })
