@@ -150,8 +150,8 @@ const singleShopSchema = new Schema<SingleShop>({
   items: [{ type: materialsSchema, required: true, default: null }]
 })
 const characterShopSchema = new Schema<CharacterShop>({
-  blacksmith: { types: singleShopSchema, required: true },
-  alchemist: { types: singleShopSchema, required: true }
+  blacksmith: { type: singleShopSchema, required: true },
+  alchemist: { type: singleShopSchema, required: true }
 })
 
 // player
