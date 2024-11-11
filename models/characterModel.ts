@@ -62,7 +62,7 @@ const weaponSchema = new Schema<Weapon>({
   attributes: { type: attributesSchema, required: true },
   image: { type: String, required: true },
   quality: { type: String, enum: qualityEnum, required: true },
-  type: { type: String, enum: ['wepaon'], required: true },
+  type: { type: String, enum: ['weapon'], required: true },
   family: { type: String, enum: weaponFamilyEnum, required: true },
   sellPrice: { type: Number, required: true }
 })
@@ -154,6 +154,7 @@ const characterShopSchema = new Schema<CharacterShop>({
   alchemist: { types: singleShopSchema, required: true }
 })
 
+// player
 const characterSchema = new Schema<Player>({
   user_id: { type: String, ref: 'User', required: [true, 'User ID is required'] },
   name: { type: String, required: [true, 'Player name is required'], unique: true },
