@@ -22,7 +22,7 @@ const userSchema = new Schema<User>({
 }, { timestamps: true })
 
 // Static signup method
-userSchema.statics.signup = async (username, password) => {
+userSchema.statics.signup = async function (username, password) {
   if (!username || !password) {
     throw Error('All fields are required')
   }
@@ -47,7 +47,7 @@ userSchema.statics.signup = async (username, password) => {
 }
 
 // Static login method
-userSchema.statics.login = async (username, password) => {
+userSchema.statics.login = async function (username, password) {
   if (!username || !password) {
     throw Error('All fields are required')
   }
