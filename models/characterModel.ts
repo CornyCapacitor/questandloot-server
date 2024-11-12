@@ -1,8 +1,6 @@
-import mongoose from 'mongoose'
-import { ActivePotion, Armor, ArmorProficiency, ArmorSlot, Attributes, CharacterShop, Damage, Equipment, Jewelery, JewelerySlot, Journey, Material, Materials, Player, Potion, Profession, Quality, Shield, SingleShop, Weapon, WeaponFamily } from '../types/player'
+import mongoose, { Schema } from 'mongoose'
+import { ActivePotion, Armor, ArmorProficiency, ArmorSlot, Attributes, CharacterShop, Damage, Equipment, Jewelery, JewelerySlot, Journey, Material, Materials, Player, PlayerModel, Potion, Profession, Quality, Shield, SingleShop, Weapon, WeaponFamily } from '../types/player'
 mongoose.set('strictQuery', true)
-
-const Schema = mongoose.Schema
 
 // profession
 const professionEnum: Profession[] = ['warrior', 'mage', 'hunter']
@@ -173,6 +171,53 @@ const characterSchema = new Schema<Player>({
   shop: { type: characterShopSchema, required: true }
 })
 
-const characterModel = mongoose.model('Character', characterSchema)
+characterSchema.statics.createCharacter = async function (userId: string, name: string, profession: Profession) {
+
+  const character: Player = await this.create({
+    user_id: userId,
+    name,
+    title: null,
+    profession,
+    level: 1,
+    experience: 0,
+    attributes: {
+      strength: 10,
+      agility: 10,
+      intellect: 10,
+      stamina: 10,
+      luck: 10
+    },
+    equipment: {
+      weapon: null,
+      shield: null,
+      head: null,
+      chest: null,
+      hands: null,
+      belt: null,
+      legs: null,
+      feet: null,
+      neck: null,
+      ring: null
+    },
+    image: 'human1.png',
+    inventory: [],
+    materials: [],
+    gold: 100,
+    shop: {
+      alchemist: {
+        lastRefresh: null,
+        items: []
+      },
+      blacksmith: {
+        lastRefresh: null,
+        items: []
+      }
+    }
+  })
+
+  return character
+}
+
+const characterModel = mongoose.model<Player, PlayerModel>('Character', characterSchema)
 
 export default characterModel

@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import mongoose from "mongoose";
 import validator from 'validator';
-import { User } from '../types/user.ts';
+import { User, UserDocument, UserModel } from '../types/user';
 mongoose.set('strictQuery', true)
 
 const Schema = mongoose.Schema
@@ -67,6 +67,6 @@ userSchema.statics.login = async function (username, password) {
   return user
 }
 
-const userModel = mongoose.model('User', userSchema)
+const userModel = mongoose.model<UserDocument, UserModel>('User', userSchema)
 
 export default userModel

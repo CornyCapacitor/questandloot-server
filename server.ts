@@ -2,11 +2,16 @@ import cors from 'cors'
 import dotenv from 'dotenv'
 import express, { Application } from 'express'
 import http from 'http'
-import jwt from 'jsonwebtoken'
 import mongoose from 'mongoose'
 import path from 'path'
 import { Server, Socket } from 'socket.io'
 import { authenticateToken } from './middlewares/authenticateToken'
+import Character from './models/characterModel'
+import loginRoute from './routes/login'
+import signupRoute from './routes/signup'
+import { ClientToServerEvents } from './types/clientEvents'
+import { Player } from './types/player'
+import { ServerToClientEvents } from './types/serverEvents'
 
 // Env files config
 dotenv.config()
@@ -22,7 +27,7 @@ const MONGO_URI = process.env.MONGO_URI
 
 // HTTP server & websocket server
 const server = http.createServer(app)
-const socketServer = new Server(server, {
+const socketServer = new Server<ClientToServerEvents, ServerToClientEvents>(server, {
   cors: { origin: CORS_ORIGIN }
 })
 
@@ -45,43 +50,45 @@ socketServer.use(authenticateToken)
 // WEBSOCKET
 socketServer.on('connection', (socket: Socket) => {
 
-  // Send player his player data based on socket.data.user I
-  const userId = socket.data.user
+  // Send player his player data based on socket.data.user
+  socket.emit('init',)
 
-  socket.emit('sendPlayerId', userId)
-
+  // Disconnect event
   socket.on('disconnect', () => {
     console.log('Client disconnected:', socket.id)
   })
 
-  socket.on('updatePlayer', (data) => {
+  // Update player event
+  socket.on('updatePlayer', async (data: Player) => {
+    if (!data) {
+      socket.emit('error', { message: 'No data to update' })
+      return
+    }
 
-    // Check object type
-    // If proper, send to db
-    // If db accepts, send back data and send that information back to client
-    // If db doesn't accept, get previous data back and force client to revert update
+    try {
+      const characterId = data.id
 
-    console.log('Updating player:', data)
-    socket.emit('updatePlayer', data)
+      const updatedCharacter = await Character.findByIdAndUpdate(
+        characterId,
+        { $set: data },
+        { new: true }
+      )
+
+      if (updatedCharacter) {
+        socket.emit('error', { message: 'Character not found' })
+      }
+
+      socket.emit('updateSuccess', updatedCharacter)
+    } catch (err) {
+      socket.emit('error', { message: 'Cannot update character' })
+      return
+    }
   })
 })
 
 // REST
-app.post('/login', (req: any, res: any) => {
-  const { username, password } = req.body
-
-  // Check user in database and retrieve his id
-  // Return player id inside token
-  const userId = 1
-
-  if (username === 'username' && password === 'password') {
-    const id = userId
-    const token = jwt.sign({ id }, JWT_SECRET!, { expiresIn: '1h' })
-    return res.json({ token })
-  }
-
-  res.status(401).send('Invalid credentials')
-})
+app.use('/api/login', loginRoute)
+app.use('/api/signup', signupRoute)
 
 // Listeners
 mongoose.connect(MONGO_URI!).then(() => {

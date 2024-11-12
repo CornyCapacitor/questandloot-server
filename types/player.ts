@@ -1,4 +1,10 @@
-import { Document } from 'mongoose'
+import { Document, Model } from 'mongoose'
+
+export type PlayerDocument = Document & Player
+
+export type PlayerModel = Model<PlayerDocument> & {
+  createCharacter(userId: string, name: string, profession: string): Promise<PlayerDocument>
+}
 
 export type Player = Document & {
   user_id: string,
