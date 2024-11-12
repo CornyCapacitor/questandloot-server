@@ -9,6 +9,7 @@ import { authenticateToken } from './middlewares/authenticateToken'
 import Character from './models/characterModel'
 import loginRoute from './routes/login'
 import signupRoute from './routes/signup'
+import usersRoute from './routes/users'
 import { ClientToServerEvents } from './types/clientEvents'
 import { Player } from './types/player'
 import { ServerToClientEvents } from './types/serverEvents'
@@ -89,6 +90,7 @@ socketServer.on('connection', (socket: Socket) => {
 // REST
 app.use('/api/login', loginRoute)
 app.use('/api/signup', signupRoute)
+app.use('/api/users', usersRoute)
 
 // Listeners
 mongoose.connect(MONGO_URI!).then(() => {

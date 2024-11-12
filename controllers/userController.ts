@@ -55,3 +55,21 @@ export const signupUser: RequestHandler = async (req: Request, res: Response): P
     }
   }
 }
+
+export const getUsers: RequestHandler = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const users = await User.find().select('_id username email')
+
+    if (!users.length) {
+      res.status(404).send({ error: 'No users found' })
+    }
+
+    res.status(200).send(users)
+  } catch (err) {
+    if (err instanceof Error) {
+      res.status(500).send({ error: err.message })
+    } else {
+      res.status(500).send({ error: 'An unknown error occurred' })
+    }
+  }
+}
