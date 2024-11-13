@@ -1,3 +1,4 @@
+// Libs
 import cors from 'cors'
 import dotenv from 'dotenv'
 import express, { Application } from 'express'
@@ -5,15 +6,20 @@ import http from 'http'
 import mongoose from 'mongoose'
 import path from 'path'
 import { Server, Socket } from 'socket.io'
+// Middlewares
 import { authenticateToken } from './middlewares/authenticateToken'
+// Models
 import Character from './models/characterModel'
-import charactersRoute from './routes/characters'
-import loginRoute from './routes/login'
-import signupRoute from './routes/signup'
-import usersRoute from './routes/users'
+// Types
 import { ClientToServerEvents } from './types/clientEvents'
 import { Player } from './types/player'
 import { ServerToClientEvents } from './types/serverEvents'
+// Routes
+import charactersRoute from './routes/characters'
+import loginRoute from './routes/login'
+import rootRoute from './routes/root'
+import signupRoute from './routes/signup'
+import usersRoute from './routes/users'
 
 // Env files config
 dotenv.config()
@@ -23,7 +29,6 @@ const app: Application = express()
 
 const REST_PORT = process.env.REST_PORT
 const WS_PORT = process.env.WS_PORT
-const JWT_SECRET = process.env.JWT_SECRET
 const CORS_ORIGIN = process.env.CORS
 const MONGO_URI = process.env.MONGO_URI
 
@@ -45,6 +50,9 @@ app.use(cors({
   methods: ['GET', 'POST'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }))
+
+// Static page
+app.use('/', express.static(path.join(__dirname, 'public')))
 
 // WS: Token authenticate
 socketServer.use(authenticateToken)
@@ -89,6 +97,7 @@ socketServer.on('connection', (socket: Socket) => {
 })
 
 // REST
+app.use('/', rootRoute)
 app.use('/api/login', loginRoute)
 app.use('/api/signup', signupRoute)
 app.use('/api/users', usersRoute)
