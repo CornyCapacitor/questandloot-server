@@ -1,5 +1,5 @@
 import dotenv from 'dotenv'
-import jwt from 'jsonwebtoken'
+import jwt, { JwtPayload } from 'jsonwebtoken'
 import { Socket } from 'socket.io'
 
 dotenv.config()
@@ -18,7 +18,13 @@ export const authenticateToken = ((socket: Socket, next: Function) => {
       return next(new Error('Authentication error: Invalid token'))
     }
 
-    socket.data.user = decoded
+    if (typeof decoded === 'object' && 'userId' in decoded && 'characterId' in decoded) {
+      socket.data.user = (decoded as JwtPayload).userId;
+      socket.data.character = (decoded as JwtPayload).characterId;
+    } else {
+      return next(new Error('Authentication error: Token payload invalid'));
+    }
+
     next()
   })
 })
