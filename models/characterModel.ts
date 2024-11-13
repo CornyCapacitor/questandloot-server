@@ -13,7 +13,7 @@ const attributesSchema = new Schema<Attributes>({
   intellect: { type: Number, required: true },
   stamina: { type: Number, required: true },
   luck: { type: Number, required: true },
-});
+}, { _id: false });
 
 // quality
 const qualityEnum: Quality[] = ['common', 'uncommon', 'rare', 'epic']
@@ -23,7 +23,7 @@ const activeJourneySchema = new Schema<Journey>({
   location: { type: String, required: true },
   valueMultiplier: { type: Number, required: true },
   returnDate: { type: Date, required: true }
-})
+}, { _id: false })
 
 // activePotion
 const potionSchema = new Schema<Potion>({
@@ -38,18 +38,18 @@ const potionSchema = new Schema<Potion>({
   type: { type: String, enum: ['potion'], required: true },
   quality: { type: String, enum: qualityEnum, required: true },
   sellPrice: { type: Number, required: true }
-})
+}, { _id: false })
 const activePotionSchema = new Schema<ActivePotion>({
   potion: { type: potionSchema, required: true },
   expiringDate: { type: Date, required: true }
-})
+}, { _id: false })
 
 // weapon
 const weaponFamilyEnum: WeaponFamily[] = ['sword', 'axe', 'mace', 'fire', 'frost', 'arcane', 'earth', 'air', 'bow', 'crossbow']
 const damageSchema = new Schema<Damage>({
   min: { type: Number, required: true },
   max: { type: Number, required: true }
-})
+}, { _id: false })
 const weaponSchema = new Schema<Weapon>({
   id: { type: String, required: true },
   name: { type: String, required: true },
@@ -63,7 +63,7 @@ const weaponSchema = new Schema<Weapon>({
   type: { type: String, enum: ['weapon'], required: true },
   family: { type: String, enum: weaponFamilyEnum, required: true },
   sellPrice: { type: Number, required: true }
-})
+}, { _id: false })
 
 // armor
 const armorProficiencyEnum: ArmorProficiency[] = ['heavy', 'medium', 'light']
@@ -81,7 +81,7 @@ const armorSchema = new Schema<Armor>({
   proficiency: { type: String, enum: armorProficiencyEnum, required: true },
   type: { type: String, enum: ['armor'], required: true },
   sellPrice: { type: Number, required: true }
-})
+}, { _id: false })
 
 // shield
 const shieldSchema = new Schema<Shield>({
@@ -96,7 +96,7 @@ const shieldSchema = new Schema<Shield>({
   quality: { type: String, enum: qualityEnum, required: true },
   type: { type: String, enum: ['shield'], required: true },
   sellPrice: { type: Number, required: true }
-})
+}, { _id: false })
 
 // jewelery
 const jewelerySlotEnum: JewelerySlot[] = ['neck', 'ring']
@@ -111,7 +111,7 @@ const jewelerySchema = new Schema<Jewelery>({
   quality: { type: String, enum: qualityEnum, required: true },
   type: { type: String, enum: ['jewelery'], required: true },
   sellPrice: { type: Number, required: true }
-})
+}, { _id: false })
 
 // equipment
 const equipmentSchema = new Schema<Equipment>({
@@ -125,7 +125,7 @@ const equipmentSchema = new Schema<Equipment>({
   feet: { type: armorSchema, default: null },
   neck: { type: jewelerySchema, default: null },
   ring: { type: jewelerySchema, default: null },
-})
+}, { _id: false })
 
 // materials
 const materialSchema = new Schema<Material>({
@@ -136,21 +136,21 @@ const materialSchema = new Schema<Material>({
   image: { type: String, required: true },
   type: { type: String, required: true },
   sellPrice: { type: Number, required: true }
-});
+}, { _id: false });
 const materialsSchema = new Schema<Materials>({
   material: { type: materialSchema, required: true },
   quantity: { type: Number, required: true }
-});
+}, { _id: false });
 
 // shop
 const singleShopSchema = new Schema<SingleShop>({
-  lastRefresh: { type: String, default: null, required: true },
+  lastRefresh: { type: String, default: null },
   items: [{ type: materialsSchema, required: true, default: null }]
-})
+}, { _id: false })
 const characterShopSchema = new Schema<CharacterShop>({
   blacksmith: { type: singleShopSchema, required: true },
   alchemist: { type: singleShopSchema, required: true }
-})
+}, { _id: false })
 
 // player
 const characterSchema = new Schema<Player>({

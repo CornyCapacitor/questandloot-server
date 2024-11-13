@@ -7,6 +7,7 @@ import path from 'path'
 import { Server, Socket } from 'socket.io'
 import { authenticateToken } from './middlewares/authenticateToken'
 import Character from './models/characterModel'
+import charactersRoute from './routes/characters'
 import loginRoute from './routes/login'
 import signupRoute from './routes/signup'
 import usersRoute from './routes/users'
@@ -91,6 +92,7 @@ socketServer.on('connection', (socket: Socket) => {
 app.use('/api/login', loginRoute)
 app.use('/api/signup', signupRoute)
 app.use('/api/users', usersRoute)
+app.use('/api/characters', charactersRoute)
 
 // Listeners
 mongoose.connect(MONGO_URI!).then(() => {
