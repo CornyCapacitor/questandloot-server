@@ -7,6 +7,7 @@ export type PlayerModel = Model<PlayerDocument> & {
 }
 
 export type Player = Document & {
+  _id?: string,
   user_id: string,
   name: string,
   title: string | null,
