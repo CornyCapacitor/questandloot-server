@@ -1,17 +1,18 @@
-import { Request, RequestHandler, Response } from 'express'
+import { Request, Response } from 'express'
+import validator from 'validator'
 import Character from '../models/characterModel'
 import User from '../models/userModel'
 import { createToken } from '../utils/createToken'
+import { hashPassword } from '../utils/hashPassword'
 
-export const loginUser: RequestHandler = async (req: Request, res: Response): Promise<void> => {
+export const loginUser = async (req: Request, res: Response): Promise<Response> => {
   const { username, password } = req.body
 
   try {
     const user = await User.login(username, password);
 
     if (!user) {
-      res.status(400).send({ error: 'Invalid username or password' });
-      return;
+      return res.status(400).send({ error: 'Invalid username or password' });
     }
 
     const character = await Character.findOne({ user_id: user._id })
@@ -19,23 +20,20 @@ export const loginUser: RequestHandler = async (req: Request, res: Response): Pr
     if (character && character._id) {
       const token = createToken(user._id, character._id);
 
-      res.status(200).send({ token })
-      return
+      return res.status(200).send({ token })
     }
 
-    res.status(400).send({ error: 'User login failed or token generation failed' })
+    return res.status(400).send({ error: 'User login failed or token generation failed' })
   } catch (err) {
     if (err instanceof Error) {
-      res.status(500).send({ error: err.message })
-      return
+      return res.status(500).send({ error: err.message })
     } else {
-      res.status(500).send({ error: 'An unknown error occurred' })
-      return
+      return res.status(500).send({ error: 'An unknown error occurred' })
     }
   }
 }
 
-export const signupUser: RequestHandler = async (req: Request, res: Response): Promise<void> => {
+export const signupUser = async (req: Request, res: Response): Promise<Response> => {
   const { username, password, name, profession } = req.body
 
   try {
@@ -46,40 +44,110 @@ export const signupUser: RequestHandler = async (req: Request, res: Response): P
 
       const token = createToken(user._id, character._id)
 
-      res.status(200).send({ token, character })
-      return
+      return res.status(200).send({ token, character })
     }
 
-    res.status(400).send({ error: 'User creation failed or token generation failed' })
-    return
+    return res.status(400).send({ error: 'User creation failed or token generation failed' })
   } catch (err) {
     if (err instanceof Error) {
-      res.status(500).send({ error: err.message })
-      return
+      return res.status(500).send({ error: err.message })
     } else {
-      res.status(500).send({ error: 'An unknown error occurred' })
-      return
+      return res.status(500).send({ error: 'An unknown error occurred' })
     }
   }
 }
 
-export const getUsers: RequestHandler = async (req: Request, res: Response): Promise<void> => {
+export const getUsers = async (req: Request, res: Response): Promise<Response> => {
   try {
     const users = await User.find()
 
     if (!users.length) {
-      res.status(404).send({ error: 'No users found' })
-      return
+      return res.status(404).send({ error: 'No users found' })
     }
 
-    res.status(200).send(users)
+    return res.status(200).send(users)
   } catch (err) {
     if (err instanceof Error) {
-      res.status(500).send({ error: err.message })
-      return
+      return res.status(500).send({ error: err.message })
     } else {
-      res.status(500).send({ error: 'An unknown error occurred' })
-      return
+      return res.status(500).send({ error: 'An unknown error occurred' })
+    }
+  }
+}
+
+export const deleteUser = async (req: Request, res: Response): Promise<Response> => {
+  const { user } = req.body
+  const userId = user?._id
+
+  try {
+    const deleteUser = await User.findOneAndDelete({ _id: userId })
+
+    if (!deleteUser) {
+      return res.status(404).send({ error: 'User not found' })
+    }
+
+    const deleteCharacter = await Character.findOneAndDelete({ user_id: userId })
+
+    if (!deleteCharacter) {
+      return res.status(404).send({ error: 'Character not found' })
+    }
+
+    if (deleteUser && deleteCharacter) {
+      return res.status(200).send({ deletedUser: deleteUser._id, deletedCharacter: deleteCharacter._id })
+    }
+
+    return res.status(400).send({ error: 'Failed to delete user or user character' })
+  } catch (err) {
+    if (err instanceof Error) {
+      return res.status(500).send({ error: err.message })
+    } else {
+      return res.status(500).send({ error: 'An unknown error occurred' })
+    }
+  }
+}
+
+export const updateUser = async (req: Request, res: Response): Promise<Response> => {
+  const { user, oldPassword, newPassword } = req.body
+  const userId = user?._id
+  const username = user?.username
+
+  try {
+    if (!userId) {
+      return res.status(400).send({ error: 'User id is required for update' })
+    }
+
+    if (!oldPassword || !newPassword) {
+      return res.status(400).send({ error: 'Both new and old passwords are required for update' })
+    }
+
+    if (oldPassword === newPassword) {
+      return res.status(400).send({ error: 'New password must be different than old password' })
+    }
+
+    await User.login(username, oldPassword)
+
+    if (!validator.isStrongPassword(newPassword)) {
+      throw Error('Password not strong enough')
+    }
+
+    const hashedPassword = await hashPassword(newPassword)
+
+    const updatedUser = await User.findOneAndUpdate(
+      { _id: userId, username },
+      { $set: { password: hashedPassword } },
+      { new: true, runValidators: true }
+    )
+
+    if (!updatedUser) {
+      return res.status(404).send({ error: 'User not found' })
+    }
+
+    return res.status(200).send({ success: 'User password updated succesfully' })
+  } catch (err) {
+    if (err instanceof Error) {
+      return res.status(500).send({ error: err.message })
+    } else {
+      return res.status(500).send({ error: 'An unknown error occurred' })
     }
   }
 }

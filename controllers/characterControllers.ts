@@ -1,24 +1,23 @@
-import { Request, RequestHandler, Response } from 'express'
+import { Request, Response } from 'express'
 import Character from '../models/characterModel'
 
-export const getCharacters: RequestHandler = async (req: Request, res: Response): Promise<void> => {
+export const getCharacters = async (req: Request, res: Response): Promise<Response> => {
   try {
     const characters = await Character.find().select('-__v')
 
     if (!characters.length) {
-      res.status(404).send({ error: 'No characters found' })
-      return
+      return res.status(404).send({ error: 'No characters found' })
     }
 
-    res.status(200).send(characters)
-    return
+    return res.status(200).send(characters)
+
   } catch (err) {
     if (err instanceof Error) {
-      res.status(500).send({ error: err.message })
-      return
+      return res.status(500).send({ error: err.message })
+
     } else {
-      res.status(500).send({ error: 'An unknown error occurred' })
-      return
+      return res.status(500).send({ error: 'An unknown error occurred' })
+
     }
   }
 }
