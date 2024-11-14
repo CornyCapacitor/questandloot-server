@@ -2,6 +2,7 @@ import bcrypt from 'bcrypt';
 import mongoose from "mongoose";
 import validator from 'validator';
 import { User, UserDocument, UserModel } from '../types/user';
+import { hashPassword } from '../utils/hashPassword';
 mongoose.set('strictQuery', true)
 
 const Schema = mongoose.Schema
@@ -37,9 +38,7 @@ userSchema.statics.signup = async function (username, password) {
     throw Error('Username is already taken')
   }
 
-  const saltRounds = 15
-  const salt = await bcrypt.genSalt(saltRounds)
-  const hashedPassword = await bcrypt.hash(password, salt)
+  const hashedPassword = await hashPassword(password)
 
   const user = await this.create({ username: username, password: hashedPassword })
 
