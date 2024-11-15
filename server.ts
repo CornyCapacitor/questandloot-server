@@ -62,6 +62,8 @@ socketServer.use(authenticateToken)
 
 // WEBSOCKET
 socketServer.on('connection', (socket: Socket) => {
+  console.log('Client connected:', socket.id)
+
   // Initial character send
   emitInit(socket)
 
