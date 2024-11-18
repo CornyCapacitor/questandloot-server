@@ -145,7 +145,7 @@ const materialsSchema = new Schema<Materials>({
 // shop
 const singleShopSchema = new Schema<SingleShop>({
   lastRefresh: { type: String, default: null },
-  items: [{ type: materialsSchema, required: true, default: null }]
+  items: [{ type: Schema.Types.Mixed, required: true, default: null }]
 }, { _id: false })
 const characterShopSchema = new Schema<CharacterShop>({
   blacksmith: { type: singleShopSchema, required: true },
@@ -172,6 +172,15 @@ const characterSchema = new Schema<Player>({
 })
 
 characterSchema.statics.createCharacter = async function (userId: string, name: string, profession: Profession) {
+  if (!userId || !name || !profession) {
+    throw Error('All fields are required')
+  }
+
+  const duplicate = await this.findOne({ name: name })
+
+  if (duplicate) {
+    throw Error('Character with this name already exists')
+  }
 
   const character: Player = await this.create({
     user_id: userId,

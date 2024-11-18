@@ -70,6 +70,9 @@ socketServer.on('connection', (socket: Socket) => {
   // On liteners
   onDisconnect(socket)
   onUpdate(socket)
+  socket.on('error', (err) => {
+    console.error(err)
+  })
 })
 
 // REST

@@ -26,7 +26,7 @@ export const loginUser = async (req: Request, res: Response): Promise<Response> 
     return res.status(400).send({ error: 'User login failed or token generation failed' })
   } catch (err) {
     if (err instanceof Error) {
-      return res.status(500).send({ error: err.message })
+      return res.status(400).send({ error: err.message })
     } else {
       return res.status(500).send({ error: 'An unknown error occurred' })
     }
@@ -39,18 +39,26 @@ export const signupUser = async (req: Request, res: Response): Promise<Response>
   try {
     const user = await User.signup(username, password)
 
-    if (user && user._id) {
-      const character = await Character.createCharacter(user._id.toString(), name, profession)
-
-      const token = createToken(user._id, character._id)
-
-      return res.status(200).send({ token, character })
+    if (!user || !user._id) {
+      return res.status(400).send({ error: 'Failed to create user' })
     }
 
-    return res.status(400).send({ error: 'User creation failed or token generation failed' })
+    try {
+      const character = await Character.createCharacter(user._id.toString(), name, profession)
+
+      if (!character || !character._id) {
+        return res.status(400).send({ error: 'Failed to create character' })
+      }
+
+      const token = createToken(user._id, character._id)
+      return res.status(200).send({ token })
+    } catch (characterErr) {
+      await User.deleteOne({ _id: user._id })
+      throw characterErr
+    }
   } catch (err) {
     if (err instanceof Error) {
-      return res.status(500).send({ error: err.message })
+      return res.status(400).send({ error: err.message })
     } else {
       return res.status(500).send({ error: 'An unknown error occurred' })
     }
@@ -68,7 +76,7 @@ export const getUsers = async (req: Request, res: Response): Promise<Response> =
     return res.status(200).send(users)
   } catch (err) {
     if (err instanceof Error) {
-      return res.status(500).send({ error: err.message })
+      return res.status(400).send({ error: err.message })
     } else {
       return res.status(500).send({ error: 'An unknown error occurred' })
     }
@@ -99,7 +107,7 @@ export const deleteUser = async (req: Request, res: Response): Promise<Response>
     return res.status(400).send({ error: 'Failed to delete user or user character' })
   } catch (err) {
     if (err instanceof Error) {
-      return res.status(500).send({ error: err.message })
+      return res.status(400).send({ error: err.message })
     } else {
       return res.status(500).send({ error: 'An unknown error occurred' })
     }
@@ -145,7 +153,7 @@ export const updateUser = async (req: Request, res: Response): Promise<Response>
     return res.status(200).send({ success: 'User password updated succesfully' })
   } catch (err) {
     if (err instanceof Error) {
-      return res.status(500).send({ error: err.message })
+      return res.status(400).send({ error: err.message })
     } else {
       return res.status(500).send({ error: 'An unknown error occurred' })
     }
