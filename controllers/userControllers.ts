@@ -8,6 +8,10 @@ import { hashPassword } from '../utils/hashPassword'
 export const loginUser = async (req: Request, res: Response): Promise<Response> => {
   const { username, password } = req.body
 
+  if (!username || !password) {
+    return res.status(400).send({ error: 'All fields are required' })
+  }
+
   try {
     const user = await User.login(username, password);
 
@@ -35,6 +39,10 @@ export const loginUser = async (req: Request, res: Response): Promise<Response> 
 
 export const signupUser = async (req: Request, res: Response): Promise<Response> => {
   const { username, password, name, profession } = req.body
+
+  if (!username || !password || !name || !profession) {
+    return res.status(400).send({ error: 'All fields are required' })
+  }
 
   try {
     const user = await User.signup(username, password)
