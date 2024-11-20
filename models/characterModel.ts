@@ -1,5 +1,5 @@
 import mongoose, { Schema } from 'mongoose'
-import { ActivePotion, Armor, ArmorProficiency, ArmorSlot, Attributes, CharacterShop, Damage, Equipment, Jewelery, JewelerySlot, Journey, Material, Materials, Player, PlayerModel, Potion, Profession, Quality, Shield, SingleShop, Weapon, WeaponFamily } from '../types/player'
+import { ActivePotion, Armor, ArmorProficiency, ArmorSlot, Attributes, CharacterShop, Damage, Equipment, Jewelery, JewelerySlot, Journey, Location, Material, Materials, Player, PlayerModel, Potion, Profession, Quality, Shield, SingleShop, Weapon, WeaponFamily } from '../types/player'
 mongoose.set('strictQuery', true)
 
 // profession
@@ -19,9 +19,14 @@ const attributesSchema = new Schema<Attributes>({
 const qualityEnum: Quality[] = ['common', 'uncommon', 'rare', 'epic']
 
 // activeJourney
+const locationSchema = new Schema<Location>({
+  name: { type: String, required: true },
+  image: { type: String, required: true }
+})
 const activeJourneySchema = new Schema<Journey>({
-  location: { type: String, required: true },
+  location: { type: locationSchema, required: true },
   valueMultiplier: { type: Number, required: true },
+  startDate: { type: Date, required: true },
   returnDate: { type: Date, required: true }
 }, { _id: false })
 

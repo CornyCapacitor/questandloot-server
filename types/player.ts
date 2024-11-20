@@ -40,9 +40,15 @@ export type Attributes = {
 }
 
 export type Journey = {
-  location: string,
+  location: Location,
   valueMultiplier: number,
+  startDate: Date,
   returnDate: Date
+}
+
+export type Location = {
+  name: string,
+  image: string
 }
 
 export type ActivePotion = {
