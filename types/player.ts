@@ -186,7 +186,7 @@ export type Materials = {
 }
 
 export type Material = {
-  id: string,
+  id: number,
   name: string,
   description: string,
   quality: Quality,

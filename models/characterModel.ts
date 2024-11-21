@@ -134,7 +134,7 @@ const equipmentSchema = new Schema<Equipment>({
 
 // materials
 const materialSchema = new Schema<Material>({
-  id: { type: String, required: true },
+  id: { type: Number, required: true },
   name: { type: String, required: true },
   description: { type: String, required: true },
   quality: { type: String, enum: qualityEnum, required: true },
