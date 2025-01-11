@@ -84,7 +84,7 @@ app.use('/api/characters', charactersRoute)
 
 // Listeners
 mongoose.connect(MONGO_URI!).then(() => {
-  console.log('Connected to mongodb!')
+  console.log('Connected to Quest and Loot database!')
 
   app.listen(REST_PORT, () => {
     console.log(`REST server is fire at http://localhost:${REST_PORT}`)
