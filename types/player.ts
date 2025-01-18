@@ -41,13 +41,13 @@ export type Attributes = {
 }
 
 export type Journey = {
-  location: Location,
+  zone: Zone,
   valueMultiplier: number,
   startDate: Date,
   returnDate: Date
 }
 
-export type Location = {
+export type Zone = {
   name: string,
   image: string
 }
