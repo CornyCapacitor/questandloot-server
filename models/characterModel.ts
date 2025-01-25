@@ -1,5 +1,5 @@
 import mongoose, { Schema } from 'mongoose'
-import { ActivePotion, Armor, ArmorProficiency, ArmorSlot, Attributes, CharacterShop, Damage, Equipment, Jewelery, JewelerySlot, Journey, Material, Materials, Player, PlayerModel, Potion, Profession, Quality, Shield, SingleShop, Weapon, WeaponFamily, Zone } from '../types/player'
+import { ActivePotion, Armor, ArmorProficiency, ArmorSlot, Attributes, CharacterShop, Damage, Dungeon, DungeonProgress, Equipment, Jewelery, JewelerySlot, Journey, Material, Materials, Player, PlayerModel, Potion, Profession, Quality, Shield, SingleShop, Weapon, WeaponFamily, Zone } from '../types/player'
 mongoose.set('strictQuery', true)
 
 // profession
@@ -28,6 +28,24 @@ const activeJourneySchema = new Schema<Journey>({
   valueMultiplier: { type: Number, required: true },
   startDate: { type: Date, required: true },
   returnDate: { type: Date, required: true }
+}, { _id: false })
+
+// dungeon)
+const dungeonProgressSchema = new Schema<DungeonProgress>({
+  dungeon1: { type: Number, min: 0, max: 10, default: null },
+  dungeon2: { type: Number, min: 0, max: 10, default: null },
+  dungeon3: { type: Number, min: 0, max: 10, default: null },
+  dungeon4: { type: Number, min: 0, max: 10, default: null },
+  dungeon5: { type: Number, min: 0, max: 10, default: null },
+  dungeon6: { type: Number, min: 0, max: 10, default: null },
+  dungeon7: { type: Number, min: 0, max: 10, default: null },
+  dungeon8: { type: Number, min: 0, max: 10, default: null },
+  dungeon9: { type: Number, min: 0, max: 10, default: null },
+  dungeon10: { type: Number, min: 0, max: 10, default: null },
+}, { _id: false });
+const dungeonSchema = new Schema<Dungeon>({
+  refreshDate: { type: Date, default: null },
+  dungeonProgress: { type: dungeonProgressSchema, required: true }
 }, { _id: false })
 
 // activePotion
@@ -168,6 +186,7 @@ const characterSchema = new Schema<Player>({
   experience: { type: Number, required: true },
   attributes: { type: attributesSchema, required: true },
   activeJourney: { type: activeJourneySchema, default: null },
+  dungeon: { type: dungeonSchema, required: true },
   activePotion: { type: activePotionSchema, default: null },
   equipment: { type: equipmentSchema, required: true },
   image: { type: String, required: true },
@@ -215,10 +234,25 @@ characterSchema.statics.createCharacter = async function (userId: string, name: 
       neck: null,
       ring: null
     },
-    image: 'human1.png',
+    image: 'human/human34.png',
     inventory: [],
     materials: [],
     gold: 100,
+    dungeon: {
+      refreshDate: null,
+      dungeonProgress: {
+        dungeon1: null,
+        dungeon2: null,
+        dungeon3: null,
+        dungeon4: null,
+        dungeon5: null,
+        dungeon6: null,
+        dungeon7: null,
+        dungeon8: null,
+        dungeon9: null,
+        dungeon10: null,
+      }
+    },
     shop: {
       alchemist: {
         lastRefresh: null,

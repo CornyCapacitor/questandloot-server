@@ -16,8 +16,9 @@ export type Player = Document & {
   level: number,
   experience: number,
   attributes: Attributes,
-  activeJourney: Journey | null,
-  activePotion: ActivePotion | null,
+  activeJourney: Journey,
+  dungeon: Dungeon,
+  activePotion: ActivePotion,
   equipment: Equipment,
   image: string,
   inventory: Inventory,
@@ -40,13 +41,6 @@ export type Attributes = {
   luck: number,
 }
 
-export type Journey = {
-  zone: Zone,
-  valueMultiplier: number,
-  startDate: Date,
-  returnDate: Date
-}
-
 export type Zone = {
   name: string,
   image: string
@@ -55,6 +49,28 @@ export type Zone = {
 export type ActivePotion = {
   potion: Potion,
   expiringDate: Date
+} | null
+
+// 
+// Dungeon & Journey types
+// 
+
+export type Journey = {
+  zone: Zone,
+  valueMultiplier: number,
+  startDate: Date,
+  returnDate: Date
+} | null
+
+export type CompletedBossesKey = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10
+
+export type DungeonKey = "dungeon1" | "dungeon2" | "dungeon3" | "dungeon4" | "dungeon5" | "dungeon6" | "dungeon7" | "dungeon8" | "dungeon9" | "dungeon10"
+
+export type DungeonProgress = Record<DungeonKey, CompletedBossesKey>
+
+export type Dungeon = {
+  refreshDate: Date | null,
+  dungeonProgress: DungeonProgress
 }
 
 // 
@@ -80,7 +96,7 @@ export type Equipment = {
 // Weapon
 // 
 
-export type WeaponFamily = "sword" | "axe" | "mace" | "fire" | "frost" | "arcane" | "earth" | "air" | "bow" | "crossbow"
+export type WeaponFamily = "sword" | "axe" | "mace" | "fire" | "frost" | "lightning" | "arcane" | "earth" | "air" | "dark" | "mystic" | "death" | "holy" | "water" | "bow" | "crossbow"
 
 export type Damage = {
   min: number,
