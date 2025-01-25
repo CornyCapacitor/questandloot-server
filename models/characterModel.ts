@@ -68,7 +68,7 @@ const activePotionSchema = new Schema<ActivePotion>({
 }, { _id: false })
 
 // weapon
-const weaponFamilyEnum: WeaponFamily[] = ['sword', 'axe', 'mace', 'fire', 'frost', 'arcane', 'earth', 'air', 'bow', 'crossbow']
+const weaponFamilyEnum: WeaponFamily[] = ['sword', 'axe', 'mace', 'fire', 'frost', 'lightning', 'arcane', 'earth', 'air', 'dark', 'mystic', 'death', 'holy', 'water', 'bow', 'crossbow']
 const damageSchema = new Schema<Damage>({
   min: { type: Number, required: true },
   max: { type: Number, required: true }
