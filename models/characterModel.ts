@@ -32,16 +32,16 @@ const activeJourneySchema = new Schema<Journey>({
 
 // dungeon)
 const dungeonProgressSchema = new Schema<DungeonProgress>({
-  dungeon1: { type: Number, min: 0, max: 10, default: null },
-  dungeon2: { type: Number, min: 0, max: 10, default: null },
-  dungeon3: { type: Number, min: 0, max: 10, default: null },
-  dungeon4: { type: Number, min: 0, max: 10, default: null },
-  dungeon5: { type: Number, min: 0, max: 10, default: null },
-  dungeon6: { type: Number, min: 0, max: 10, default: null },
-  dungeon7: { type: Number, min: 0, max: 10, default: null },
-  dungeon8: { type: Number, min: 0, max: 10, default: null },
-  dungeon9: { type: Number, min: 0, max: 10, default: null },
-  dungeon10: { type: Number, min: 0, max: 10, default: null },
+  dungeon1: { type: Number, min: 0, max: 10, default: 0 },
+  dungeon2: { type: Number, min: 0, max: 10, default: 0 },
+  dungeon3: { type: Number, min: 0, max: 10, default: 0 },
+  dungeon4: { type: Number, min: 0, max: 10, default: 0 },
+  dungeon5: { type: Number, min: 0, max: 10, default: 0 },
+  dungeon6: { type: Number, min: 0, max: 10, default: 0 },
+  dungeon7: { type: Number, min: 0, max: 10, default: 0 },
+  dungeon8: { type: Number, min: 0, max: 10, default: 0 },
+  dungeon9: { type: Number, min: 0, max: 10, default: 0 },
+  dungeon10: { type: Number, min: 0, max: 10, default: 0 },
 }, { _id: false });
 const dungeonSchema = new Schema<Dungeon>({
   refreshDate: { type: Date, default: null },
@@ -241,16 +241,16 @@ characterSchema.statics.createCharacter = async function (userId: string, name: 
     dungeon: {
       refreshDate: null,
       dungeonProgress: {
-        dungeon1: null,
-        dungeon2: null,
-        dungeon3: null,
-        dungeon4: null,
-        dungeon5: null,
-        dungeon6: null,
-        dungeon7: null,
-        dungeon8: null,
-        dungeon9: null,
-        dungeon10: null,
+        dungeon1: 0,
+        dungeon2: 0,
+        dungeon3: 0,
+        dungeon4: 0,
+        dungeon5: 0,
+        dungeon6: 0,
+        dungeon7: 0,
+        dungeon8: 0,
+        dungeon9: 0,
+        dungeon10: 0,
       }
     },
     shop: {
