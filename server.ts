@@ -51,7 +51,7 @@ app.use(express.json())
 app.use(cors({
   // origin: CORS_ORIGIN,
   origin: '*',
-  methods: ['GET', 'POST'],
+  methods: ['GET', 'POST', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }))
 
