@@ -6,7 +6,7 @@ dotenv.config()
 
 const JWT_SECRET = process.env.JWT_SECRET
 
-export const authenticateToken = ((socket: Socket, next: Function) => {
+export const authenticateTokenWS = ((socket: Socket, next: Function) => {
   const token = Array.isArray(socket.handshake.query.token) ? socket.handshake.query.token[0] : socket.handshake.query.token
 
   if (!token) {

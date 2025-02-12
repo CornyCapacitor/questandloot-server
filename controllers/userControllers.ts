@@ -92,8 +92,11 @@ export const getUsers = async (req: Request, res: Response): Promise<Response> =
 }
 
 export const deleteUser = async (req: Request, res: Response): Promise<Response> => {
-  const { user } = req.body
-  const userId = user?._id
+  if (!req.user) {
+    return res.status(401).send({ error: 'User not authenticated' })
+  }
+
+  const userId = req.user.id
 
   try {
     const deleteUser = await User.findOneAndDelete({ _id: userId })
@@ -123,15 +126,15 @@ export const deleteUser = async (req: Request, res: Response): Promise<Response>
 }
 
 export const updateUser = async (req: Request, res: Response): Promise<Response> => {
-  const { user, oldPassword, newPassword } = req.body
-  const userId = user?._id
-  const username = user?.username
+  const { oldPassword, newPassword } = req.body
+
+  if (!req.user) {
+    return res.status(401).send({ error: 'User not authenticated' })
+  }
+
+  const userId = req.user.id
 
   try {
-    if (!userId) {
-      return res.status(400).send({ error: 'User id is required for update' })
-    }
-
     if (!oldPassword || !newPassword) {
       return res.status(400).send({ error: 'Both new and old passwords are required for update' })
     }
@@ -140,7 +143,15 @@ export const updateUser = async (req: Request, res: Response): Promise<Response>
       return res.status(400).send({ error: 'New password must be different than old password' })
     }
 
-    await User.login(username, oldPassword)
+    const user = await User.findById({ _id: userId })
+
+    if (!user) {
+      return res.status(401).send({ error: 'Id from jwt does not match any user in database' })
+    }
+
+    const username = user.username
+
+    await User.login(user.username, oldPassword)
 
     if (!validator.isStrongPassword(newPassword)) {
       throw Error('Password not strong enough')

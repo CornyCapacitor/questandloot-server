@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import { deleteUser, getUsers, updateUser } from '../controllers/userControllers'
+import { authenticateTokenREST } from '../middlewares/authenticateTokenREST'
 import { asyncHandler } from '../utils/asyncHandler'
 
 const router = Router()
@@ -8,9 +9,9 @@ const router = Router()
 router.get('/', asyncHandler(getUsers))
 
 // Delete user
-router.delete('/', asyncHandler(deleteUser))
+router.delete('/', authenticateTokenREST, asyncHandler(deleteUser))
 
 // Update user
-router.patch('/', asyncHandler(updateUser))
+router.patch('/', authenticateTokenREST, asyncHandler(updateUser))
 
 export default router

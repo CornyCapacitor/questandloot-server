@@ -7,9 +7,10 @@ import mongoose from 'mongoose'
 import path from 'path'
 import { Server, Socket } from 'socket.io'
 // Middlewares
-import { authenticateToken } from './middlewares/authenticateToken'
+import { authenticateTokenWS } from './middlewares/authenticateTokenWS'
 // Types
 import { ClientToServerEvents } from './types/clientEvents'
+import './types/globals'
 import { ServerToClientEvents } from './types/serverEvents'
 // Routes
 import charactersRoute from './routes/characters'
@@ -58,7 +59,7 @@ app.use(cors({
 app.use('/', express.static(path.join(__dirname, 'public')))
 
 // WS: Token authenticate
-socketServer.use(authenticateToken)
+socketServer.use(authenticateTokenWS)
 
 // WEBSOCKET
 socketServer.on('connection', (socket: Socket) => {

@@ -1,6 +1,7 @@
 import { Document, Model } from 'mongoose';
 
 export type User = Document & {
+  _id: string,
   username: string,
   password: string,
 }
