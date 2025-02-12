@@ -126,7 +126,7 @@ export const deleteUser = async (req: Request, res: Response): Promise<Response>
 }
 
 export const updateUser = async (req: Request, res: Response): Promise<Response> => {
-  const { oldPassword, newPassword } = req.body
+  const { newPassword, repeatNewPassword } = req.body
 
   if (!req.user) {
     return res.status(401).send({ error: 'User not authenticated' })
@@ -135,12 +135,12 @@ export const updateUser = async (req: Request, res: Response): Promise<Response>
   const userId = req.user.id
 
   try {
-    if (!oldPassword || !newPassword) {
-      return res.status(400).send({ error: 'Both new and old passwords are required for update' })
+    if (!newPassword) {
+      return res.status(400).send({ error: 'You need to type a new password' })
     }
 
-    if (oldPassword === newPassword) {
-      return res.status(400).send({ error: 'New password must be different than old password' })
+    if (newPassword === !repeatNewPassword) {
+      return res.status(400).send({ error: 'Passwords are not equal' })
     }
 
     const user = await User.findById({ _id: userId })
@@ -150,8 +150,6 @@ export const updateUser = async (req: Request, res: Response): Promise<Response>
     }
 
     const username = user.username
-
-    await User.login(user.username, oldPassword)
 
     if (!validator.isStrongPassword(newPassword)) {
       throw Error('Password not strong enough')
