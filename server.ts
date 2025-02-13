@@ -1,5 +1,4 @@
-// Libs
-import cors from 'cors'
+// Configuration libraries
 import dotenv from 'dotenv'
 import express, { Application } from 'express'
 import http from 'http'
@@ -7,6 +6,10 @@ import mongoose from 'mongoose'
 import path from 'path'
 import { Server, Socket } from 'socket.io'
 // Middlewares
+import cors from 'cors'
+import mongoSanitize from 'express-mongo-sanitize'
+import rateLimit from 'express-rate-limit'
+import helmet from 'helmet'
 import { authenticateTokenWS } from './middlewares/authenticateTokenWS'
 // Types
 import { ClientToServerEvents } from './types/clientEvents'
@@ -18,7 +21,7 @@ import loginRoute from './routes/login'
 import rootRoute from './routes/root'
 import signupRoute from './routes/signup'
 import usersRoute from './routes/users'
-// Sockets
+// Socket actions
 import { emitInit } from './events/emit/emitInit'
 import { onDisconnect } from './events/on/onDisconnect'
 import { onUpdate } from './events/on/onUpdate'
@@ -54,6 +57,18 @@ app.use(cors({
   methods: ['GET', 'POST', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }))
+
+// Helmet
+app.use(helmet())
+
+// Limiter
+app.use(rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20
+}))
+
+// Mongo sanitize
+app.use(mongoSanitize())
 
 // Static page
 app.use('/', express.static(path.join(__dirname, 'public')))

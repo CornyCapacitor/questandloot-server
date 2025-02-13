@@ -9,25 +9,25 @@ export const loginUser = async (req: Request, res: Response): Promise<Response> 
   const { username, password } = req.body
 
   if (!username || !password) {
-    return res.status(400).send({ error: 'All fields are required' })
+    throw new Error('All fields are required')
   }
 
   try {
-    const user = await User.login(username, password);
+    const user = await User.login(username, password)
 
     if (!user) {
-      return res.status(400).send({ error: 'Invalid username or password' });
+      throw new Error('Invalid username or password')
     }
 
     const character = await Character.findOne({ user_id: user._id })
 
     if (character && character._id) {
-      const token = createToken(user._id, character._id);
+      const token = createToken(user._id, character._id)
 
       return res.status(200).send({ token })
     }
 
-    return res.status(400).send({ error: 'User login failed or token generation failed' })
+    throw new Error('User login failed or token generation failed')
   } catch (err) {
     if (err instanceof Error) {
       return res.status(400).send({ error: err.message })
@@ -41,21 +41,21 @@ export const signupUser = async (req: Request, res: Response): Promise<Response>
   const { username, password, name, profession } = req.body
 
   if (!username || !password || !name || !profession) {
-    return res.status(400).send({ error: 'All fields are required' })
+    throw new Error('All fields are required')
   }
 
   try {
     const user = await User.signup(username, password)
 
     if (!user || !user._id) {
-      return res.status(400).send({ error: 'Failed to create user' })
+      throw new Error('Failed to create user')
     }
 
     try {
       const character = await Character.createCharacter(user._id.toString(), name, profession)
 
       if (!character || !character._id) {
-        return res.status(400).send({ error: 'Failed to create character' })
+        throw new Error('Failed to create character')
       }
 
       const token = createToken(user._id, character._id)
@@ -115,7 +115,7 @@ export const deleteUser = async (req: Request, res: Response): Promise<Response>
       return res.status(200).send({ deletedUser: deleteUser._id, deletedCharacter: deleteCharacter._id })
     }
 
-    return res.status(400).send({ error: 'Failed to delete user or user character' })
+    throw new Error('Failed to delete user or user character')
   } catch (err) {
     if (err instanceof Error) {
       return res.status(400).send({ error: err.message })
@@ -136,23 +136,23 @@ export const updateUser = async (req: Request, res: Response): Promise<Response>
 
   try {
     if (!newPassword) {
-      return res.status(400).send({ error: 'You need to type a new password' })
+      throw new Error('You need to type a new password')
     }
 
     if (newPassword === !repeatNewPassword) {
-      return res.status(400).send({ error: 'Passwords are not equal' })
+      throw new Error('Passwords are not equal')
     }
 
     const user = await User.findById({ _id: userId })
 
     if (!user) {
-      return res.status(401).send({ error: 'Id from jwt does not match any user in database' })
+      return res.status(498).send({ error: 'Id from jwt does not match any user in database' })
     }
 
     const username = user.username
 
     if (!validator.isStrongPassword(newPassword)) {
-      throw Error('Password not strong enough')
+      throw new Error('Password not strong enough')
     }
 
     const hashedPassword = await hashPassword(newPassword)
