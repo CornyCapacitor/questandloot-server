@@ -12,7 +12,7 @@ export const getCharacters = async (req: Request, res: Response): Promise<Respon
 
   try {
     const characters = await Character.find()
-      .select('name title profession level -_id')
+      .select('name title profession level description -_id')
       .skip(skip)
       .limit(limit)
 
