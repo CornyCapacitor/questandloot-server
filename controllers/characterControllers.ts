@@ -16,6 +16,7 @@ export const getCharacters = async (req: Request, res: Response): Promise<Respon
       .select('name title profession level description -_id')
       .skip(skip)
       .limit(limit)
+      .sort({ level: -1 })
 
     if (!characters.length) {
       return res.status(404).send({ error: 'No characters found' })
