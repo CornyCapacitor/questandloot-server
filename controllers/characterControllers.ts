@@ -2,9 +2,10 @@ import { Request, Response } from 'express'
 import Character from '../models/characterModel'
 
 export const getCharacters = async (req: Request, res: Response): Promise<Response> => {
-  if (!req.user) {
-    return res.status(401).send({ error: 'User not authenticated' })
-  }
+  // For now I don't want it to be behind authentication since the game allows only socketed users to use this endpoint
+  // if (!req.user) {
+  //   return res.status(401).send({ error: 'User not authenticated' })
+  // }
 
   const page = parseInt(req.query.page as string) || 1
   const limit = 50
