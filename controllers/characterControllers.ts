@@ -8,7 +8,7 @@ export const getCharacters = async (req: Request, res: Response): Promise<Respon
   // }
 
   const page = parseInt(req.query.page as string) || 1
-  const limit = 50
+  const limit = parseInt(req.query.limit as string) || 50
   const skip = (page - 1) * limit
 
   try {

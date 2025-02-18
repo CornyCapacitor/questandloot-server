@@ -63,8 +63,8 @@ app.use(helmet())
 
 // Limiter
 app.use(rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 20
+  windowMs: 1 * 60 * 1000,
+  max: 60
 }))
 
 // Mongo sanitize
