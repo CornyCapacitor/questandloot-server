@@ -5,7 +5,7 @@
   "main": "server.ts",
   "scripts": {
     "build": "npx tsc",
-    "start": "node dist/server.ts",
+    "start": "node dist/server.tj",
     "dev": "nodemon server.ts"
   },
   "keywords": [],
