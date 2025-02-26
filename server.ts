@@ -40,8 +40,8 @@ const MONGO_URI = process.env.MONGO_URI
 // HTTP server & websocket server
 const server = http.createServer(app)
 const socketServer = new Server<ClientToServerEvents, ServerToClientEvents>(server, {
-  // cors: { origin: CORS_ORIGIN }
-  cors: { origin: '*' }
+  cors: { origin: CORS_ORIGIN }
+  // cors: { origin: '*' }
 })
 
 // MIDDLEWARES
@@ -52,8 +52,8 @@ app.use(express.json())
 
 // REST: Cors config
 app.use(cors({
-  // origin: CORS_ORIGIN,
-  origin: '*',
+  origin: CORS_ORIGIN,
+  // origin: '*',
   methods: ['GET', 'POST', 'PATCH', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }))
