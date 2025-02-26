@@ -103,10 +103,10 @@ mongoose.connect(MONGO_URI!).then(() => {
   console.log('Connected to Quest and Loot database!')
 
   app.listen(REST_PORT, () => {
-    console.log(`REST server is fire at http://localhost:${REST_PORT}`)
+    console.log(`REST server is fire at PORT ${REST_PORT}`)
   })
 
   server.listen(WS_PORT, () => {
-    console.log(`WEBSOCKET server is fire at ws://localhost:${WS_PORT}`)
+    console.log(`WEBSOCKET server is fire at PORT ${WS_PORT}`)
   })
 })
