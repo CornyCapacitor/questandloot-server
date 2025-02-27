@@ -101,6 +101,7 @@ app.use('/api/characters', charactersRoute)
 // Listeners
 mongoose.connect(MONGO_URI!).then(() => {
   console.log('Connected to Quest and Loot database!')
+  console.log("CORS_ORIGIN:", CORS_ORIGIN)
 
   app.listen(REST_PORT, () => {
     console.log(`REST server is fire at PORT ${REST_PORT}`)
