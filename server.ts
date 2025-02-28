@@ -29,6 +29,8 @@ import { onUpdate } from './events/on/onUpdate'
 // Env files config
 dotenv.config()
 
+
+
 // App setup
 const app: Application = express()
 
@@ -45,6 +47,8 @@ const socketServer = new Server<ClientToServerEvents, ServerToClientEvents>(serv
 })
 
 // MIDDLEWARES
+// IP verification
+app.set('trust proxy', 1)
 // Static page
 app.use('/', express.static(path.join(__dirname, 'public')))
 // REST: json parse
