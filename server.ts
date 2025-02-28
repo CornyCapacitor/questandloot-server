@@ -34,7 +34,7 @@ const app: Application = express()
 
 const REST_PORT = process.env.REST_PORT
 const WS_PORT = process.env.WS_PORT
-const CORS_ORIGIN = process.env.CORS
+const CORS_ORIGIN = process.env.CORS_ORIGIN
 const MONGO_URI = process.env.MONGO_URI
 
 // HTTP server & websocket server
