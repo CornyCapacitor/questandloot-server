@@ -29,8 +29,6 @@ import { onUpdate } from './events/on/onUpdate'
 // Env files config
 dotenv.config()
 
-
-
 // App setup
 const app: Application = express()
 
@@ -42,8 +40,10 @@ const MONGO_URI = process.env.MONGO_URI
 // HTTP server & websocket server
 const server = http.createServer(app)
 const socketServer = new Server<ClientToServerEvents, ServerToClientEvents>(server, {
-  cors: { origin: CORS_ORIGIN }
-  // cors: { origin: '*' }
+  cors: {
+    origin: CORS_ORIGIN,
+    methods: ["GET", "POST"]
+  }
 })
 
 // MIDDLEWARES
