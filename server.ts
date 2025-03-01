@@ -32,8 +32,7 @@ dotenv.config()
 // App setup
 const app: Application = express()
 
-const REST_PORT = process.env.REST_PORT
-const WS_PORT = process.env.WS_PORT
+const PORT = process.env.PORT || 3000
 const CORS_ORIGIN = process.env.CORS_ORIGIN
 const MONGO_URI = process.env.MONGO_URI
 
@@ -107,11 +106,11 @@ mongoose.connect(MONGO_URI!).then(() => {
   console.log('Connected to Quest and Loot database!')
   console.log("CORS_ORIGIN:", CORS_ORIGIN)
 
-  app.listen(REST_PORT, () => {
-    console.log(`REST server is fire at PORT ${REST_PORT}`)
+  app.listen(PORT, () => {
+    console.log(`REST server is fire at PORT ${PORT}`)
   })
 
-  server.listen(WS_PORT, () => {
-    console.log(`WEBSOCKET server is fire at PORT ${WS_PORT}`)
+  server.listen(PORT, () => {
+    console.log(`WEBSOCKET server is fire at PORT ${PORT}`)
   })
 })
