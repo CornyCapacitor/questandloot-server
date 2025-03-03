@@ -33,7 +33,7 @@ dotenv.config()
 const app: Application = express()
 
 const REST_PORT = process.env.PORT || 443
-const WS_PORT = process.env.WS_PORT || 3000
+const WS_PORT = process.env.WS_PORT || 443
 const CORS_ORIGIN = process.env.CORS_ORIGIN
 const MONGO_URI = process.env.MONGO_URI
 
