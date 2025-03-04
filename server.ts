@@ -32,7 +32,7 @@ dotenv.config()
 // App setup
 const app: Application = express()
 
-const GENERAL_PORT = process.env.GENERAL_PORT
+const PORT = process.env.PORT
 const REST_PORT = process.env.REST_PORT || 3333
 const WS_PORT = process.env.WS_PORT || 3334
 const CORS_ORIGIN = process.env.CORS_ORIGIN
@@ -116,7 +116,7 @@ mongoose.connect(MONGO_URI!).then(() => {
   //   console.log(`WEBSOCKET server is fire at PORT ${WS_PORT}`)
   // })
 
-  app.listen(GENERAL_PORT, () => {
-    console.log(`REST & WEBSOCKET server are fire at PORT ${GENERAL_PORT}`)
+  app.listen(PORT, () => {
+    console.log(`REST & WEBSOCKET server are fire at PORT ${PORT}`)
   })
 })
