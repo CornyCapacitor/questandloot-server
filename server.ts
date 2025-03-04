@@ -116,7 +116,7 @@ mongoose.connect(MONGO_URI!).then(() => {
   //   console.log(`WEBSOCKET server is fire at PORT ${WS_PORT}`)
   // })
 
-  app.listen(PORT, () => {
+  server.listen(PORT, () => {
     console.log(`REST & WEBSOCKET server are fire at PORT ${PORT}`)
   })
 })
